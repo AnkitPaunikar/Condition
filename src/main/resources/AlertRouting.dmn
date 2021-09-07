@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:camunda="http://camunda.org/schema/1.0/dmn" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" id="AlertRouting" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.9.0">
+  <decision id="AlertRouting_Table" name="AlertRouting_Table">
+    <decisionTable id="DecisionTable_102h6o5" hitPolicy="FIRST">
+      <input id="InputClause_06rq9qc" label="State" biodi:width="400" camunda:inputVariable="State">
+        <inputExpression id="LiteralExpression_182eq5o" typeRef="string" />
+        <inputValues id="UnaryTests_187rdo7">
+          <text></text>
+        </inputValues>
+      </input>
+      <input id="InputClause_1cn6nd3" label="Amount" camunda:inputVariable="dTransAmount">
+        <inputExpression id="LiteralExpression_1bbfo9c" typeRef="double">
+          <text></text>
+        </inputExpression>
+      </input>
+      <output id="OutputClause_1ng2efm" label="Zone" name="Zone" typeRef="string" />
+      <rule id="DecisionRule_1dovvmk">
+        <inputEntry id="UnaryTests_0cn0g9i">
+          <text>"Maharashtra","Gujarat","Goa","Rajasthan"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1cr5wn7">
+          <text>&lt;= 10000 </text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0anljvy">
+          <text>"west"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1bfh9wb">
+        <inputEntry id="UnaryTests_106ac8t">
+          <text>"Tamilnadu","Andhra Pradesh","Telangana","Kerala"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0woufwe">
+          <text>&lt;= 10000</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1cxtb9i">
+          <text>"south"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0mqq5hm">
+        <inputEntry id="UnaryTests_1oqmt9w">
+          <text>"Jammu","Kashmir"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_025lgpm">
+          <text>&gt; 5000</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1h6gpj3">
+          <text>"supervisors"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1dfsrxt">
+        <inputEntry id="UnaryTests_0thgwtp">
+          <text>not("")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_04vf03k">
+          <text>&gt; 5000</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0vderg6">
+          <text>"supervisors"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0dijdkj">
+        <inputEntry id="UnaryTests_0wxg0db">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_17vr2su">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1rjgg2s">
+          <text></text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape id="DMNShape_0yhw45b" dmnElementRef="AlertRouting_Table">
+        <dc:Bounds height="80" width="180" x="150" y="80" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

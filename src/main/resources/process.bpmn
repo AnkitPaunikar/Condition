@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1kt3c11" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="AlertWorkflow" name="Alert" isExecutable="true">
+    <bpmn:userTask id="Activity_0asxqlj" name="Supervise Fraud Alert">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="vcUniqueTransID" label="Txn ID" type="string" />
+          <camunda:formField id="dtTrxnTime" label="Txn Date Time" type="string" />
+          <camunda:formField id="vcPayerAddress" label="Payer" type="string" />
+          <camunda:formField id="vcPayeeAddress" label="Payee" type="string" />
+          <camunda:formField id="dTransAmount" label="Amount" type="string" />
+          <camunda:formField id="vcLocation" label="Location" type="string" />
+          <camunda:formField id="vcMobileNum" label="Mobile" type="string" />
+          <camunda:formField id="vcDevice" label="Device" type="string" />
+          <camunda:formField id="RuleFailed" label="FRM Details" type="string" />
+          <camunda:formField id="Comment" label="Comment" type="string" />
+          <camunda:formField id="Approve" label="Approve?" type="boolean" defaultValue="false" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_19hdz9w</bpmn:incoming>
+      <bpmn:outgoing>Flow_011m1rl</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_0o3vcwc">
+      <bpmn:incoming>Flow_0leq9f7</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rt1620</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ygezpx</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Activity_1xpd5y4" name="Record Decision" camunda:class="com.algoengines.frm.AlertWorkflow.Decision">
+      <bpmn:incoming>Flow_011m1rl</bpmn:incoming>
+      <bpmn:incoming>Flow_0rt1620</bpmn:incoming>
+      <bpmn:incoming>Flow_1xgy8tr</bpmn:incoming>
+      <bpmn:outgoing>Flow_1kdsw13</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0boo6bt" default="Flow_1xgy8tr">
+      <bpmn:incoming>Flow_0u0wtfc</bpmn:incoming>
+      <bpmn:outgoing>Flow_19hdz9w</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1xgy8tr</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Activity_1a41o1k" name="Review Fraud Alert">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="vcUniqueTransID" label="Txn ID" type="string" />
+          <camunda:formField id="dtTrxnTime" label="Txn Date Time" type="string" />
+          <camunda:formField id="vcPayerAddress" label="Payer" type="string" />
+          <camunda:formField id="vcPayeeAddress" label="Payee" type="string" />
+          <camunda:formField id="dTransAmount" label="Amount" type="string" />
+          <camunda:formField id="vcLocation" label="Location" type="string" />
+          <camunda:formField id="vcMobileNum" label="Mobile" type="string" />
+          <camunda:formField id="vcDevice" label="Device" type="string" />
+          <camunda:formField id="RuleFailed" label="FRM Details" type="string" />
+          <camunda:formField id="Comment" label="Comment" type="string" />
+          <camunda:formField id="Approve" label="Approve?" type="boolean" defaultValue="false" />
+          <camunda:formField id="Escalate" label="Escalate?" type="boolean" defaultValue="false" />
+          <camunda:formField id="payeeavg" label="AVG" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ygezpx</bpmn:incoming>
+      <bpmn:outgoing>Flow_0u0wtfc</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_1pkmw9j" name="Payee avg check" camunda:class="com.algoengines.frm.AlertWorkflow.payee">
+      <bpmn:incoming>Flow_0mbe901</bpmn:incoming>
+      <bpmn:outgoing>Flow_0leq9f7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:businessRuleTask id="Activity_0j0det2" name="Alert Routing Table" camunda:resultVariable="Zone" camunda:decisionRef="AlertRouting_Table" camunda:mapDecisionResult="singleEntry">
+      <bpmn:incoming>Flow_0ea9c3f</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mbe901</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:sequenceFlow id="Flow_0ea9c3f" sourceRef="Event_00pi839" targetRef="Activity_0j0det2" />
+    <bpmn:sequenceFlow id="Flow_19hdz9w" name="Escalated" sourceRef="Gateway_0boo6bt" targetRef="Activity_0asxqlj">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${Escalate==true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_011m1rl" sourceRef="Activity_0asxqlj" targetRef="Activity_1xpd5y4" />
+    <bpmn:sequenceFlow id="Flow_0leq9f7" sourceRef="Activity_1pkmw9j" targetRef="Gateway_0o3vcwc" />
+    <bpmn:sequenceFlow id="Flow_0rt1620" sourceRef="Gateway_0o3vcwc" targetRef="Activity_1xpd5y4">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{Approvee=="Yes"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1ygezpx" sourceRef="Gateway_0o3vcwc" targetRef="Activity_1a41o1k">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{Approvee=="No"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1xgy8tr" sourceRef="Gateway_0boo6bt" targetRef="Activity_1xpd5y4" />
+    <bpmn:sequenceFlow id="Flow_0u0wtfc" sourceRef="Activity_1a41o1k" targetRef="Gateway_0boo6bt" />
+    <bpmn:sequenceFlow id="Flow_0mbe901" sourceRef="Activity_0j0det2" targetRef="Activity_1pkmw9j" />
+    <bpmn:endEvent id="Event_1wfiqkd">
+      <bpmn:incoming>Flow_1kdsw13</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1kdsw13" sourceRef="Activity_1xpd5y4" targetRef="Event_1wfiqkd" />
+    <bpmn:startEvent id="Event_00pi839">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="vcUniqueTransID" label="vcUniqueTransID" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0ea9c3f</bpmn:outgoing>
+    </bpmn:startEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_12hjqey" name="Message_10r7maa" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="AlertWorkflow">
+      <bpmndi:BPMNEdge id="Flow_1kdsw13_di" bpmnElement="Flow_1kdsw13">
+        <di:waypoint x="1160" y="180" />
+        <di:waypoint x="1222" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mbe901_di" bpmnElement="Flow_0mbe901">
+        <di:waypoint x="410" y="180" />
+        <di:waypoint x="490" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0u0wtfc_di" bpmnElement="Flow_0u0wtfc">
+        <di:waypoint x="880" y="180" />
+        <di:waypoint x="935" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xgy8tr_di" bpmnElement="Flow_1xgy8tr">
+        <di:waypoint x="985" y="180" />
+        <di:waypoint x="1060" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ygezpx_di" bpmnElement="Flow_1ygezpx">
+        <di:waypoint x="705" y="180" />
+        <di:waypoint x="780" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rt1620_di" bpmnElement="Flow_0rt1620">
+        <di:waypoint x="680" y="155" />
+        <di:waypoint x="680" y="80" />
+        <di:waypoint x="1110" y="80" />
+        <di:waypoint x="1110" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0leq9f7_di" bpmnElement="Flow_0leq9f7">
+        <di:waypoint x="590" y="180" />
+        <di:waypoint x="655" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_011m1rl_di" bpmnElement="Flow_011m1rl">
+        <di:waypoint x="1110" y="363" />
+        <di:waypoint x="1110" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19hdz9w_di" bpmnElement="Flow_19hdz9w">
+        <di:waypoint x="960" y="205" />
+        <di:waypoint x="960" y="393" />
+        <di:waypoint x="1060" y="393" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="965" y="301" width="49" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ea9c3f_di" bpmnElement="Flow_0ea9c3f">
+        <di:waypoint x="188" y="180" />
+        <di:waypoint x="310" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0asxqlj_di" bpmnElement="Activity_0asxqlj">
+        <dc:Bounds x="1060" y="363" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0o3vcwc_di" bpmnElement="Gateway_0o3vcwc" isMarkerVisible="true">
+        <dc:Bounds x="655" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1xpd5y4_di" bpmnElement="Activity_1xpd5y4">
+        <dc:Bounds x="1060" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0boo6bt_di" bpmnElement="Gateway_0boo6bt" isMarkerVisible="true">
+        <dc:Bounds x="935" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1a41o1k_di" bpmnElement="Activity_1a41o1k">
+        <dc:Bounds x="780" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1pkmw9j_di" bpmnElement="Activity_1pkmw9j">
+        <dc:Bounds x="490" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0j0det2_di" bpmnElement="Activity_0j0det2">
+        <dc:Bounds x="310" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1wfiqkd_di" bpmnElement="Event_1wfiqkd">
+        <dc:Bounds x="1222" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1urqwom_di" bpmnElement="Event_00pi839">
+        <dc:Bounds x="152" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
